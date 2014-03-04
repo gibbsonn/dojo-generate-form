@@ -289,18 +289,39 @@ define([
             // summary:
             //		get the human readable message. If the parameter is enclosed in curly braces then the message
             // 		will be served from this model's messages property or the message bundle.  Otherwise it will be returned as is.
+
+  //            if (!keyOrMessage) {
+  //                return this.getMessageForKey("invalidMessage");
+  //            } else if (internal && this.alwaysUseInvalidMessage) {
+  //                // TODO this is wrong if the message comes from a model validation.
+  //                return this.getMessageForKey("invalidMessage");
+  //            } else {
+  //                var key = keyOrMessage.match(MESSAGE_PATTERN);
+  //                if (key !== null && key.length === 2) {
+  //                    return this.getMessageForKey(key[1]);
+  //                } else {
+  //                    return keyOrMessage;
+  //                }
+  //            }
+
+          // temporarily change order of how we get the error message
+          // to enable use of message pattern if you want to add
+          // a custom validation message
+
+            var key = keyOrMessage.match(MESSAGE_PATTERN);
+
+            var isMessagesKey = key !== null && key.length === 2;
+
             if (!keyOrMessage) {
                 return this.getMessageForKey("invalidMessage");
+            }
+            else if (isMessagesKey){
+              return this.getMessageForKey(key[1]);
             } else if (internal && this.alwaysUseInvalidMessage) {
                 // TODO this is wrong if the message comes from a model validation.
                 return this.getMessageForKey("invalidMessage");
             } else {
-                var key = keyOrMessage.match(MESSAGE_PATTERN);
-                if (key !== null && key.length === 2) {
-                    return this.getMessageForKey(key[1]);
-                } else {
-                    return keyOrMessage;
-                }
+                return keyOrMessage;
             }
 
         },
